@@ -1,0 +1,65 @@
+body {
+    margin: 0;
+}
+
+.content {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: #924011;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content:after {
+  position: absolute;
+  content: '';
+  background-image: url("./assets/images/noise.png");
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-top: 170px;
+}
+
+h1, a, p {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+    margin: 0;
+    text-decoration: none;
+}
+
+.header {
+    font-size: 64px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.brown-text {
+    font-size: 36px;
+    color: #9A725C;
+}
+
+.white-text {
+    font-size: 20px;
+    color: #fff;
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    width: 630px;
+    gap: 20px;
+}
