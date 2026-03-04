@@ -70,3 +70,11 @@ h1, a, p {
     bottom: 0;
     z-index: 1;
 }
+
+#squirrel {
+    position: fixed;
+    width: 80px;
+    z-index: 1000;
+    transition: none;
+    cursor: pointer;
+}
