@@ -27,11 +27,12 @@ async function fetchSheetData() {
         );
         const json = JSON.parse(jsonString);
 
-        // Extract column headers from first row
-        const cols = json.table.cols.map(col => col.label.toLowerCase());
+        // Extract column headers from first data row
+        const headerRow = json.table.rows[0];
+        const cols = headerRow.c.map(cell => (cell ? cell.v : '').toLowerCase());
 
-        // Map rows to objects using column headers
-        const data = json.table.rows.map(row => {
+        // Map remaining rows to objects using column headers (skip header row)
+        const data = json.table.rows.slice(1).map(row => {
             const obj = {};
             row.c.forEach((cell, index) => {
                 const key = cols[index];
