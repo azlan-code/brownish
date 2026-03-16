@@ -1,3 +1,8 @@
+:root {
+    --dark-orange: #A8401B;
+    --light-orange: #f2e4df;
+}
+
 body {
     margin: 0;
 }

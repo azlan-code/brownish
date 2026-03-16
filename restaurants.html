@@ -1,0 +1,41 @@
+<head>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="flex w-full h-full justify-center ">
+        <div class="w-[1000px] text-[var(--dark-orange)]">
+            <div class="flex justify-between my-[20px]">
+                <div>
+                    <h1 class="font-sans">Places to Go</h1>
+                    <p class="font-sans">South-East Asian restaurants around NYC.</p>
+                </div>
+                <button>
+                    Submit a place
+                </button>
+            </div>
+            
+            <input type="text" id="search-input" class="w-full border-2 border-[var(--dark-orange)] py-[2px] px-[4px]" />
+
+            <table class="w-full text-[var(--dark-orange)] mt-[20px]">
+                <thead class="border-b-2 border-[var(--dark-orange)]">
+                    <tr>
+                        <th class="font-normal text-left">Restaurant</th>
+                        <th class="font-normal text-left">Cuisine</th>
+                        <th class="font-normal text-left">Neighbourhood</th>
+                        <th class="font-normal text-left">Borough</th>
+                        <th class="font-normal text-left">Map</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="hidden flex justify-center items-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-4 border-[var(--dark-orange)] border-t-transparent"></div>
+            </div>
+        </div>
+    </div>
+    <script src="restaurants.js"></script>
+</body>
