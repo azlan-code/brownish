@@ -48,6 +48,7 @@ async function fetchSheetData() {
 }
 
 function renderAllRows(data) {
+    console.log(data);
     tableBody.innerHTML = '';
 
     data.forEach(restaurant => {
