@@ -7,15 +7,21 @@
         <div class="w-[1000px] text-[var(--dark-orange)]">
             <div class="flex justify-between my-[20px]">
                 <div>
-                    <h1 class="font-sans">Places to Go</h1>
-                    <p class="font-sans">South-East Asian restaurants around NYC.</p>
+                    <h1 class="font-sans text-4xl mb-2">Places to Go</h1>
+                    <p class="font-sans mb-6">South-East Asian restaurants around NYC.</p>
                 </div>
-                <button>
+                <!-- <button>
                     Submit a place
-                </button>
+                </button> -->
             </div>
             
-            <input type="text" id="search-input" class="w-full border-2 border-[var(--dark-orange)] py-[2px] px-[4px]" />
+            <div class="flex items-center w-full border-2 border-[var(--dark-orange)] bg-[var(--light-orange)]">
+                <svg class="w-5 h-5 ml-2 mr-2 text-[var(--dark-orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="search-input" placeholder="Search" class="w-full border-none outline-none py-2 px-[4px] text-[var(--dark-orange)] placeholder-[var(--dark-orange)] bg-[var(--light-orange)]" />
+            </div>
+            
 
             <table class="w-full text-[var(--dark-orange)] mt-[20px]">
                 <thead class="border-b-2 border-[var(--dark-orange)]">

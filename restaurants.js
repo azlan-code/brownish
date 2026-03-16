@@ -1,8 +1,13 @@
 // === Configuration ===
 const SHEET_ID = '1RK-Q99xBorqI19IIBKwdfaDRVNDx0sPyNICWuYhZE5U';
+
 // === DOM Elements ===
 const tableBody = document.getElementById('table-body');
 const spinner = document.getElementById('loading-spinner');
+const searchInput = document.getElementById('search-input');
+
+// === State ===
+let allRestaurants = [];
 
 // === Functions ===
 function showSpinner() {
@@ -11,6 +16,27 @@ function showSpinner() {
 
 function hideSpinner() {
     if (spinner) spinner.classList.add('hidden');
+}
+
+function escapeRegex(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function highlightText(text, searchTerm) {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
+    return text.replace(regex, '<span style="background-color: var(--light-orange)">$1</span>');
+}
+
+function filterRestaurants(searchTerm) {
+    if (!searchTerm) return allRestaurants;
+    const term = searchTerm.toLowerCase();
+    return allRestaurants.filter(r =>
+        (r.name || '').toLowerCase().includes(term) ||
+        (r.cuisine || '').toLowerCase().includes(term) ||
+        (r.neighbourhood || '').toLowerCase().includes(term) ||
+        (r.borough || '').toLowerCase().includes(term)
+    );
 }
 
 async function fetchSheetData() {
@@ -48,18 +74,17 @@ async function fetchSheetData() {
     }
 }
 
-function renderAllRows(data) {
-    console.log(data);
+function renderAllRows(data, searchTerm = '') {
     tableBody.innerHTML = '';
 
     data.forEach(restaurant => {
         const row = document.createElement('tr');
         row.className = 'border-b border-[var(--dark-orange)] h-[40px] hover:bg-[var(--light-orange)]';
         row.innerHTML = `
-            <td>${restaurant.name || ''}</td>
-            <td>${restaurant.cuisine || ''}</td>
-            <td>${restaurant.neighbourhood || ''}</td>
-            <td>${restaurant.borough || ''}</td>
+            <td>${highlightText(restaurant.name || '', searchTerm)}</td>
+            <td>${highlightText(restaurant.cuisine || '', searchTerm)}</td>
+            <td>${highlightText(restaurant.neighbourhood || '', searchTerm)}</td>
+            <td>${highlightText(restaurant.borough || '', searchTerm)}</td>
             <td>${restaurant.map || ''}</td>
         `;
         tableBody.appendChild(row);
@@ -69,7 +94,14 @@ function renderAllRows(data) {
 // === Initialize ===
 (async function init() {
     showSpinner();
-    const data = await fetchSheetData();
-    renderAllRows(data);
+    allRestaurants = await fetchSheetData();
+    renderAllRows(allRestaurants);
     hideSpinner();
+
+    // Search filtering
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value;
+        const filtered = filterRestaurants(term);
+        renderAllRows(filtered, term);
+    });
 })();
