@@ -84,7 +84,7 @@ function renderAllRows(data, searchTerm = '') {
             <td>${highlightText(restaurant.cuisine || '', searchTerm)}</td>
             <td>${highlightText(restaurant.neighbourhood || '', searchTerm)}</td>
             <td>${highlightText(restaurant.borough || '', searchTerm)}</td>
-            <td><a href=${restaurant.map || ''}>${restaurant.map || ''}</a></td>
+            <td><a href=${restaurant.map || ''} class='font-sans'>Open in Map</a></td>
         `;
         tableBody.appendChild(row);
     });
