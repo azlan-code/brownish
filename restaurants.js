@@ -55,7 +55,7 @@ async function fetchSheetData() {
 
         // Extract column headers from first data row
         const headerRow = json.table.rows[0];
-        const cols = headerRow.c.map(cell => (cell ? cell.v : '').toLowerCase());
+        const cols = headerRow.c.map(cell => (cell && cell.v != null ? String(cell.v) : '').toLowerCase());
 
         // Map remaining rows to objects using column headers (skip header row)
         const data = json.table.rows.slice(1).map(row => {
