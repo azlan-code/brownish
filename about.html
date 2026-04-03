@@ -1,145 +1,50 @@
 <head>
-    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        .text-image {
+            position: absolute;
+            display: inline-block;
+            white-space: nowrap;
+            background-image: url('assets/images/cover.png');
+            background-size: 900px 240px;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
 </head>
-<body>
-    <div class="content">
-        <div class="about-content">
-            <p class="white-text">brownish studio is a shared creative practice by hazel and azlan. it lives primarily in jewellery, but expands into objects, wearables aesthetics, and experiments with form.</p>
-            <p class="white-text">Our work is rooted in hands-on making and informed by years of manufacturing (+ sourcing) experience. We believe jewellery is a form of creative care; a wearable archive of memory and identity.</p>
-            <p class="white-text">If you’re a fellow creative looking to bring an idea into the physical world, we’re always happy to collaborate and share knowledge! we make most of our friends’ engagement rings (-: </p>
+<body class="font-['Fragment_Mono',monospace] min-h-screen m-0 flex items-center">
+    <div class="flex items-center justify-center gap-10 w-full">
+        <div class="flex flex-col gap-2">
+            <div class="whitespace-pre">BROWNISH IS A RESEARCH STUDIO IN OBJECT-MAKING
+MATERIALISING    THROUGH    SHARED    PRACTICE
+BETWEEN HAZEL & AZLAN</div>
+            <div class="whitespace-pre">            WE APPROACH DESIGN AND FABRICATION
+AS  A  FORM  OF  PLACE-MAKING</div>
+            <div class="whitespace-pre">            WE WORK IN JEWELLERY AND HARDWARE
+APPROACHED AS CYBERNETIC EXTENSIONS:  OBJECTS
+THAT CARRY IDENTITY, HISTORY, AND PLACE.</div>
+            <div class="whitespace-pre">             OUR PROCESS IS HANDS-ON AND R&D-
+FIRST, SUPPLEMENTED BY YEARS OF MANUFACTURING
+AND SOURCING EXPERIENCE   IN NYC AND OVERSEAS</div>
+            <div class="whitespace-pre">PAST COLLABORATORS:
+              / ERA LABS (PRIMAVERA COLLECTION)
+              / LEKONDO (ONTOLOGY & MERCH)
+              / LHUNE (DESIGN & SUPPLY CHAIN)</div>
         </div>
-        <div class="tsushima">
-            <a href="/">
-                <img src="./assets/images/tsushima.gif" />
-            </a>
+        <div class="relative w-[900px] min-w-[900px] h-[240px] text-[30px] font-bold">
+            <span class="text-image bottom-0 left-0 rotate-[22deg] skew-x-[22deg] bg-[position:left_bottom]">NO ONE HAS IMAGINED US</span>
+            <span class="text-image bottom-[-9px] right-0 -rotate-[16deg] -skew-x-[16deg] bg-[position:right_bottom]">WE WANT TO LIVE LIKE TREES</span>
+            <span class="text-image top-[40px] right-[50px] rotate-[18deg] skew-x-[18deg] scale-x-[-1] bg-[position:right_top]">SYCAMORES BLAZING THROUGH</span>
+            <span class="text-image top-[35px] left-[45px] -rotate-[20deg] -skew-x-[20deg] scale-x-[-1] tracking-wide bg-[position:left_top]">THE SULPHURIC AIR</span>
         </div>
     </div>
 
-    <!-- Interactive Squirrel -->
-    <img id="squirrel" src="./assets/images/squirrel.png" alt="squirrel" />
-
-    <script>
-        (function() {
-            const squirrel = document.getElementById('squirrel');
-            const TRIGGER_DISTANCE = 120;  // Distance to trigger flee
-            const RUN_DISTANCE = 800;      // Distance to run away
-            const RUN_SPEED = 12;          // Pixels per frame
-            const WOBBLE_INTERVAL = 200;   // Wobble frequency in ms
-
-            let posX, posY;
-            let velocityX, velocityY;      // Current movement direction (normalized)
-            let remainingDistance;         // Distance left to travel
-            let animationId = null;
-            let isRunning = false;
-            let wobbleAngle = -15;
-            let lastWobbleTime = 0;
-            let currentScaleX = 1;
-
-            // Initialize random position
-            function initPosition() {
-                const maxX = window.innerWidth - squirrel.offsetWidth;
-                const maxY = window.innerHeight - squirrel.offsetHeight;
-                posX = Math.random() * maxX;
-                posY = Math.random() * maxY;
-                updateTransform(1, 0);
-            }
-
-            // Update squirrel transform
-            function updateTransform(scaleX, rotation) {
-                squirrel.style.left = posX + 'px';
-                squirrel.style.top = posY + 'px';
-                squirrel.style.transform = `scaleX(${scaleX}) rotate(${rotation}deg)`;
-            }
-
-            // Animation loop with edge reflection
-            function runAnimation() {
-                // Check if we've traveled the full distance
-                if (remainingDistance <= 0) {
-                    isRunning = false;
-                    animationId = null;
-                    updateTransform(currentScaleX, 0);
-                    return;
-                }
-
-                // Calculate step for this frame
-                const stepX = velocityX * RUN_SPEED;
-                const stepY = velocityY * RUN_SPEED;
-
-                // Move position
-                posX += stepX;
-                posY += stepY;
-
-                // Check and reflect off edges
-                const maxX = window.innerWidth - squirrel.offsetWidth;
-                const maxY = window.innerHeight - squirrel.offsetHeight;
-
-                if (posX <= 0 || posX >= maxX) {
-                    velocityX = -velocityX;
-                    currentScaleX = velocityX < 0 ? -1 : 1;
-                    posX = Math.max(0, Math.min(posX, maxX));
-                }
-                if (posY <= 0 || posY >= maxY) {
-                    velocityY = -velocityY;
-                    posY = Math.max(0, Math.min(posY, maxY));
-                }
-
-                // Subtract distance traveled this frame
-                remainingDistance -= RUN_SPEED;
-
-                // Wobble while running
-                const now = Date.now();
-                if (now - lastWobbleTime > WOBBLE_INTERVAL) {
-                    wobbleAngle = wobbleAngle === -15 ? 15 : -15;
-                    lastWobbleTime = now;
-                }
-
-                updateTransform(currentScaleX, wobbleAngle);
-
-                // Continue animation
-                animationId = requestAnimationFrame(runAnimation);
-            }
-
-            // Handle mouse movement
-            document.addEventListener('mousemove', function(e) {
-                // Don't trigger if already running
-                if (isRunning) return;
-
-                const squirrelCenterX = posX + squirrel.offsetWidth / 2;
-                const squirrelCenterY = posY + squirrel.offsetHeight / 2;
-
-                const dx = squirrelCenterX - e.clientX;
-                const dy = squirrelCenterY - e.clientY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < TRIGGER_DISTANCE) {
-                    isRunning = true;
-
-                    // Calculate normalized direction away from cursor
-                    const length = Math.max(distance, 1);
-                    velocityX = dx / length;
-                    velocityY = dy / length;
-
-                    // Set remaining distance to travel
-                    remainingDistance = RUN_DISTANCE;
-
-                    // Flip horizontally based on run direction
-                    currentScaleX = velocityX < 0 ? -1 : 1;
-
-                    // Start animation
-                    lastWobbleTime = Date.now();
-                    animationId = requestAnimationFrame(runAnimation);
-                }
-            });
-
-            // Initialize when image loads
-            if (squirrel.complete) {
-                initPosition();
-            } else {
-                squirrel.onload = initPosition;
-            }
-        })();
-    </script>
+    <footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-[50px] pb-[20px]">
+        <img src="./assets/images/footer.png" />
+        <h2 class="text-[40px] tracking-tight">/ABOUT</h2>
+    </footer>
 </body>

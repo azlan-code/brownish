@@ -1,0 +1,147 @@
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+</head>
+<body class="m-0">
+    <div class="relative w-screen h-screen bg-[#924011] flex items-center justify-center">
+        <!-- Noise overlay -->
+        <div class="absolute w-full h-full bg-[url('./assets/images/noise.png')] pointer-events-none"></div>
+        <div class="flex flex-col w-[630px] gap-5">
+            <p class="font-['Instrument_Serif',serif] font-normal m-0 text-[20px] text-white">brownish studio is a shared creative practice by hazel and azlan. it lives primarily in jewellery, but expands into objects, wearables aesthetics, and experiments with form.</p>
+            <p class="font-['Instrument_Serif',serif] font-normal m-0 text-[20px] text-white">Our work is rooted in hands-on making and informed by years of manufacturing (+ sourcing) experience. We believe jewellery is a form of creative care; a wearable archive of memory and identity.</p>
+            <p class="font-['Instrument_Serif',serif] font-normal m-0 text-[20px] text-white">If you're a fellow creative looking to bring an idea into the physical world, we're always happy to collaborate and share knowledge! we make most of our friends' engagement rings (-: </p>
+        </div>
+        <div class="absolute left-0 bottom-0 z-[1]">
+            <a href="/" class="font-['Instrument_Serif',serif] font-normal m-0 no-underline">
+                <img src="./assets/images/tsushima.gif" />
+            </a>
+        </div>
+    </div>
+
+    <!-- Interactive Squirrel -->
+    <img id="squirrel" class="fixed w-[80px] z-[1000] transition-none cursor-pointer" src="./assets/images/squirrel.png" alt="squirrel" />
+
+    <script>
+        (function() {
+            const squirrel = document.getElementById('squirrel');
+            const TRIGGER_DISTANCE = 120;  // Distance to trigger flee
+            const RUN_DISTANCE = 800;      // Distance to run away
+            const RUN_SPEED = 12;          // Pixels per frame
+            const WOBBLE_INTERVAL = 200;   // Wobble frequency in ms
+
+            let posX, posY;
+            let velocityX, velocityY;      // Current movement direction (normalized)
+            let remainingDistance;         // Distance left to travel
+            let animationId = null;
+            let isRunning = false;
+            let wobbleAngle = -15;
+            let lastWobbleTime = 0;
+            let currentScaleX = 1;
+
+            // Initialize random position
+            function initPosition() {
+                const maxX = window.innerWidth - squirrel.offsetWidth;
+                const maxY = window.innerHeight - squirrel.offsetHeight;
+                posX = Math.random() * maxX;
+                posY = Math.random() * maxY;
+                updateTransform(1, 0);
+            }
+
+            // Update squirrel transform
+            function updateTransform(scaleX, rotation) {
+                squirrel.style.left = posX + 'px';
+                squirrel.style.top = posY + 'px';
+                squirrel.style.transform = `scaleX(${scaleX}) rotate(${rotation}deg)`;
+            }
+
+            // Animation loop with edge reflection
+            function runAnimation() {
+                // Check if we've traveled the full distance
+                if (remainingDistance <= 0) {
+                    isRunning = false;
+                    animationId = null;
+                    updateTransform(currentScaleX, 0);
+                    return;
+                }
+
+                // Calculate step for this frame
+                const stepX = velocityX * RUN_SPEED;
+                const stepY = velocityY * RUN_SPEED;
+
+                // Move position
+                posX += stepX;
+                posY += stepY;
+
+                // Check and reflect off edges
+                const maxX = window.innerWidth - squirrel.offsetWidth;
+                const maxY = window.innerHeight - squirrel.offsetHeight;
+
+                if (posX <= 0 || posX >= maxX) {
+                    velocityX = -velocityX;
+                    currentScaleX = velocityX < 0 ? -1 : 1;
+                    posX = Math.max(0, Math.min(posX, maxX));
+                }
+                if (posY <= 0 || posY >= maxY) {
+                    velocityY = -velocityY;
+                    posY = Math.max(0, Math.min(posY, maxY));
+                }
+
+                // Subtract distance traveled this frame
+                remainingDistance -= RUN_SPEED;
+
+                // Wobble while running
+                const now = Date.now();
+                if (now - lastWobbleTime > WOBBLE_INTERVAL) {
+                    wobbleAngle = wobbleAngle === -15 ? 15 : -15;
+                    lastWobbleTime = now;
+                }
+
+                updateTransform(currentScaleX, wobbleAngle);
+
+                // Continue animation
+                animationId = requestAnimationFrame(runAnimation);
+            }
+
+            // Handle mouse movement
+            document.addEventListener('mousemove', function(e) {
+                // Don't trigger if already running
+                if (isRunning) return;
+
+                const squirrelCenterX = posX + squirrel.offsetWidth / 2;
+                const squirrelCenterY = posY + squirrel.offsetHeight / 2;
+
+                const dx = squirrelCenterX - e.clientX;
+                const dy = squirrelCenterY - e.clientY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < TRIGGER_DISTANCE) {
+                    isRunning = true;
+
+                    // Calculate normalized direction away from cursor
+                    const length = Math.max(distance, 1);
+                    velocityX = dx / length;
+                    velocityY = dy / length;
+
+                    // Set remaining distance to travel
+                    remainingDistance = RUN_DISTANCE;
+
+                    // Flip horizontally based on run direction
+                    currentScaleX = velocityX < 0 ? -1 : 1;
+
+                    // Start animation
+                    lastWobbleTime = Date.now();
+                    animationId = requestAnimationFrame(runAnimation);
+                }
+            });
+
+            // Initialize when image loads
+            if (squirrel.complete) {
+                initPosition();
+            } else {
+                squirrel.onload = initPosition;
+            }
+        })();
+    </script>
+</body>
