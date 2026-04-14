@@ -4,20 +4,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        .text-image {
-            position: absolute;
-            display: inline-block;
-            white-space: nowrap;
-            background-image: url('assets/images/cover.png');
-            background-size: 900px 240px;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        #textCanvas {
+            display: block;
+        }
+        .hover-highlight-1:hover {
+            background-color: #82A867;
+            cursor: pointer;
+        }
+        .hover-highlight-2:hover {
+            background-color: #D3D3D3;
+            cursor: pointer;
+        }
+        .hover-highlight-3:hover {
+            background-color: #FFC000;
+            cursor: pointer;
         }
     </style>
 </head>
 <body class="font-['Fragment_Mono',monospace] min-h-screen m-0 flex items-center">
-    <div class="flex items-center justify-center gap-10 w-full">
+    <div class="flex flex-wrap items-center justify-center gap-10 w-full">
         <div class="flex flex-col gap-2">
             <div class="whitespace-pre">BROWNISH IS A RESEARCH STUDIO IN OBJECT-MAKING
 MATERIALISING    THROUGH    SHARED    PRACTICE
@@ -31,16 +36,63 @@ THAT CARRY IDENTITY, HISTORY, AND PLACE.</div>
 FIRST, SUPPLEMENTED BY YEARS OF MANUFACTURING
 AND SOURCING EXPERIENCE   IN NYC AND OVERSEAS</div>
             <div class="whitespace-pre">PAST COLLABORATORS:
-              / ERA LABS (PRIMAVERA COLLECTION)
-              / LEKONDO (ONTOLOGY & MERCH)
-              / LHUNE (DESIGN & SUPPLY CHAIN)</div>
+<span class="hover-highlight-1">              / ERA LABS (PRIMAVERA COLLECTION)</span>
+<span class="hover-highlight-2">              / LEKONDO (ONTOLOGY & MERCH)</span>
+<span class="hover-highlight-3">              / LHUNE (DESIGN & SUPPLY CHAIN)</span></div>
         </div>
-        <div class="relative w-[900px] min-w-[900px] h-[240px] text-[30px] font-bold">
-            <span class="text-image bottom-0 left-0 rotate-[22deg] skew-x-[22deg] bg-[position:left_bottom]">NO ONE HAS IMAGINED US</span>
-            <span class="text-image bottom-[-9px] right-0 -rotate-[16deg] -skew-x-[16deg] bg-[position:right_bottom]">WE WANT TO LIVE LIKE TREES</span>
-            <span class="text-image top-[40px] right-[50px] rotate-[18deg] skew-x-[18deg] scale-x-[-1] bg-[position:right_top]">SYCAMORES BLAZING THROUGH</span>
-            <span class="text-image top-[35px] left-[45px] -rotate-[20deg] -skew-x-[20deg] scale-x-[-1] tracking-wide bg-[position:left_top]">THE SULPHURIC AIR</span>
-        </div>
+        <canvas id="textCanvas" width="880" height="340" class="max-w-full h-auto"></canvas>
+        <script>
+            (function() {
+                const canvas = document.getElementById('textCanvas');
+                const ctx = canvas.getContext('2d');
+
+                const img = new Image();
+                img.src = 'assets/images/cover.png';
+
+                const lines = [
+                    { text: 'NO ONE HAS IMAGINED US', x: 0, y: 180, rotate: 22, skewX: 22, mirror: false },
+                    { text: 'WE WANT TO LIVE LIKE TREES', x: 870, y: 200, rotate: -16, skewX: -16, mirror: false, alignRight: true },
+                    { text: 'SYCAMORES BLAZING THROUGH', x: 820, y: 170, rotate: 18, skewX: 18, mirror: true },
+                    { text: 'THE SULPHURIC AIR', x: 350, y: 40, rotate: -20, skewX: -20, mirror: true }
+                ];
+
+                function drawText() {
+                    ctx.clearRect(0, 0, 880, 340);
+                    ctx.font = 'bold 30px "Fragment Mono", monospace';
+
+                    // Draw all text lines in solid black first
+                    ctx.fillStyle = '#000';
+                    lines.forEach(line => {
+                        ctx.save();
+                        ctx.translate(line.x, line.y);
+                        ctx.rotate(line.rotate * Math.PI / 180);
+                        ctx.transform(1, 0, Math.tan(line.skewX * Math.PI / 180), 1, 0, 0);
+                        if (line.mirror) ctx.scale(-1, 1);
+                        if (line.alignRight) {
+                            const width = ctx.measureText(line.text).width;
+                            ctx.fillText(line.text, -width, 0);
+                        } else {
+                            ctx.fillText(line.text, 0, 0);
+                        }
+                        ctx.restore();
+                    });
+
+                    // Composite the image over the text shapes
+                    ctx.globalCompositeOperation = 'source-in';
+                    ctx.drawImage(img, 0, 0, 880, 340);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+
+                img.onload = function() {
+                    document.fonts.ready.then(drawText);
+                };
+
+                // Fallback if image is cached
+                if (img.complete) {
+                    document.fonts.ready.then(drawText);
+                }
+            })();
+        </script>
     </div>
 
     <footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-[50px] pb-[20px]">
