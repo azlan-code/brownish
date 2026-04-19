@@ -19,6 +19,9 @@
             background-color: #FFC000;
             cursor: pointer;
         }
+        #collaboratorModal {
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="font-['Fragment_Mono',monospace] min-h-screen m-0 flex items-center">
@@ -36,64 +39,88 @@ THAT CARRY IDENTITY, HISTORY, AND PLACE.</div>
 FIRST, SUPPLEMENTED BY YEARS OF MANUFACTURING
 AND SOURCING EXPERIENCE   IN NYC AND OVERSEAS</div>
             <div class="whitespace-pre">PAST COLLABORATORS:
-<span class="hover-highlight-1">              / ERA LABS (PRIMAVERA COLLECTION)</span>
-<span class="hover-highlight-2">              / LEKONDO (ONTOLOGY & MERCH)</span>
-<span class="hover-highlight-3">              / LHUNE (DESIGN & SUPPLY CHAIN)</span></div>
+<span class="hover-highlight-1" data-content="/assets/images/era.jpg">              / ERA LABS (PRIMAVERA COLLECTION)</span>
+<span class="hover-highlight-2" data-content="/assets/images/lekondo.gif">              / LEKONDO (ONTOLOGY & MERCH)</span>
+<span class="hover-highlight-3" data-content="/assets/images/lhune.gif">              / LHUNE (DESIGN & SUPPLY CHAIN)</span></div>
         </div>
-        <canvas id="textCanvas" width="880" height="340" class="max-w-full h-auto"></canvas>
-        <script>
-            (function() {
-                const canvas = document.getElementById('textCanvas');
-                const ctx = canvas.getContext('2d');
-
-                const img = new Image();
-                img.src = 'assets/images/cover.png';
-
-                const lines = [
-                    { text: 'NO ONE HAS IMAGINED US', x: 0, y: 180, rotate: 22, skewX: 22, mirror: false },
-                    { text: 'WE WANT TO LIVE LIKE TREES', x: 870, y: 200, rotate: -16, skewX: -16, mirror: false, alignRight: true },
-                    { text: 'SYCAMORES BLAZING THROUGH', x: 820, y: 170, rotate: 18, skewX: 18, mirror: true },
-                    { text: 'THE SULPHURIC AIR', x: 350, y: 40, rotate: -20, skewX: -20, mirror: true }
-                ];
-
-                function drawText() {
-                    ctx.clearRect(0, 0, 880, 340);
-                    ctx.font = 'bold 30px "Fragment Mono", monospace';
-
-                    // Draw all text lines in solid black first
-                    ctx.fillStyle = '#000';
-                    lines.forEach(line => {
-                        ctx.save();
-                        ctx.translate(line.x, line.y);
-                        ctx.rotate(line.rotate * Math.PI / 180);
-                        ctx.transform(1, 0, Math.tan(line.skewX * Math.PI / 180), 1, 0, 0);
-                        if (line.mirror) ctx.scale(-1, 1);
-                        if (line.alignRight) {
-                            const width = ctx.measureText(line.text).width;
-                            ctx.fillText(line.text, -width, 0);
-                        } else {
-                            ctx.fillText(line.text, 0, 0);
-                        }
-                        ctx.restore();
-                    });
-
-                    // Composite the image over the text shapes
-                    ctx.globalCompositeOperation = 'source-in';
-                    ctx.drawImage(img, 0, 0, 880, 340);
-                    ctx.globalCompositeOperation = 'source-over';
-                }
-
-                img.onload = function() {
-                    document.fonts.ready.then(drawText);
-                };
-
-                // Fallback if image is cached
-                if (img.complete) {
-                    document.fonts.ready.then(drawText);
-                }
-            })();
-        </script>
+        <div class="relative">
+            <canvas id="textCanvas" width="880" height="340" class="max-w-full h-auto"></canvas>
+            <div id="collaboratorModal" class="hidden absolute bg-white border-2 border-black p-4 z-10 max-w-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <img id="modalContent">
+            </div>
+        </div>
     </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('textCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            img.src = 'assets/images/cover.png';
+
+            const lines = [
+                { text: 'NO ONE HAS IMAGINED US', x: 0, y: 180, rotate: 22, skewX: 22, mirror: false },
+                { text: 'WE WANT TO LIVE LIKE TREES', x: 870, y: 200, rotate: -16, skewX: -16, mirror: false, alignRight: true },
+                { text: 'SYCAMORES BLAZING THROUGH', x: 820, y: 170, rotate: 18, skewX: 18, mirror: true },
+                { text: 'THE SULPHURIC AIR', x: 350, y: 40, rotate: -20, skewX: -20, mirror: true }
+            ];
+
+            function drawText() {
+                ctx.clearRect(0, 0, 880, 340);
+                ctx.font = 'bold 30px "Fragment Mono", monospace';
+
+                // Draw all text lines in solid black first
+                ctx.fillStyle = '#000';
+                lines.forEach(line => {
+                    ctx.save();
+                    ctx.translate(line.x, line.y);
+                    ctx.rotate(line.rotate * Math.PI / 180);
+                    ctx.transform(1, 0, Math.tan(line.skewX * Math.PI / 180), 1, 0, 0);
+                    if (line.mirror) ctx.scale(-1, 1);
+                    if (line.alignRight) {
+                        const width = ctx.measureText(line.text).width;
+                        ctx.fillText(line.text, -width, 0);
+                    } else {
+                        ctx.fillText(line.text, 0, 0);
+                    }
+                    ctx.restore();
+                });
+
+                // Composite the image over the text shapes
+                ctx.globalCompositeOperation = 'source-in';
+                ctx.drawImage(img, 0, 0, 880, 340);
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            img.onload = function() {
+                document.fonts.ready.then(drawText);
+            };
+
+            // Fallback if image is cached
+            if (img.complete) {
+                document.fonts.ready.then(drawText);
+            }
+        })();
+
+        // Collaborator hover modal functionality
+        (function() {
+            const modal = document.getElementById('collaboratorModal');
+            const modalContent = document.getElementById('modalContent');
+            const hoverSpans = document.querySelectorAll('[class^="hover-highlight-"]');
+
+            hoverSpans.forEach(span => {
+                span.addEventListener('mouseenter', function() {
+                    modalContent.src = this.getAttribute('data-content');
+                    modal.classList.remove('hidden');
+                });
+
+                span.addEventListener('mouseleave', function() {
+                    modal.classList.add('hidden');
+                });
+            });
+        })();
+    </script>
 
     <footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-[50px] pb-[20px]">
         <img src="./assets/images/footer.png" />
