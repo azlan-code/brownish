@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hazel</title>
+<style>
+/* ============================================================
+   MINIMAL — lines & flat shapes
+   vandyke brown base · lamp OFF = day · lamp ON = night
+   ============================================================ */
+:root{
+  --bg:#f2e9db;
+  --ink:#362304;
+  --ink-soft:#a08a64;
+  --line:#362304;
+
+  --rust:#a3492a;
+  --teal:#3f948c;
+  --pink:#ffcfc4;
+  --mustard:#dcae2e;
+  --cream:#e3d4b4;
+  --lblue:#9cbcce;
+  --cactus:#a9bf90;
+  --cactus-spike:#6d8352;
+  --navy:#000831;
+  --burnt:#b85e00;
+
+  --glow:0;
+  --t:.18s;
+}
+body.dark{
+  --bg:#241809;
+  --ink:#f0e0c4;
+  --ink-soft:#8d7952;
+  --line:#f0e0c4;
+
+  --rust:#ad4b2b;
+  --teal:#4aa89f;
+  --pink:#efb5a5;
+  --mustard:#e0b32f;
+  --cream:#57452a;
+  --lblue:#a9cede;
+  --cactus:#b3ca97;
+  --cactus-spike:#79905c;
+  --navy:#2a3a6b;
+  --burnt:#c9761a;
+
+  --glow:1;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+::selection{background:#f9c6d3;color:#3c3a33} /* baby-pink text highlight */
+html,body{height:100%}
+body{
+  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow:hidden;
+  transition:background var(--t) ease,color var(--t) ease;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* ============================================================
+   PAGE
+   ============================================================ */
+.room{
+  position:fixed;inset:0;
+}
+
+/* name — quiet, top left, lots of air */
+.name{
+  position:absolute;left:9vw;top:11vh;
+  font-size:15px;font-weight:500;
+  letter-spacing:.44em;text-transform:uppercase;
+  color:var(--ink);
+  transition:color var(--t) ease;
+}
+.name::after{
+  content:"";display:block;
+  width:2.2em;height:2px;background:var(--line);
+  margin-top:14px;
+  transition:background var(--t) ease;
+}
+
+/* ============================================================
+   SHELF CLUSTER — right side
+   ============================================================ */
+.scene{
+  position:absolute;right:8vw;top:50%;
+  width:380px;height:600px;
+  transform:translateY(-50%);
+}
+
+.shelf{position:absolute;left:0;width:100%}
+.shelf .plank{
+  position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--line);
+  transition:background var(--t) ease;
+}
+
+.book{
+  position:absolute;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--t) ease,color var(--t) ease,
+             border-color var(--t) ease,transform var(--t) ease;
+}
+@media (hover:hover) and (pointer:fine){
+  button.book:hover{transform:translateX(10px)}
+}
+button.book:focus-visible{
+  transform:translateX(10px);
+  outline:2px solid var(--ink-soft);outline-offset:4px;
+}
+/* generous tap target without changing the visual */
+button.book::before{content:"";position:absolute;inset:-9px 0}
+.book span{
+  font-size:11px;font-weight:500;
+  letter-spacing:.4em;text-transform:uppercase;
+  padding-left:.4em;
+  user-select:none;
+}
+
+/* ============================================================
+   LAMP — pure geometry · click = toggle
+   ============================================================ */
+.lamp{
+  position:absolute;left:104px;bottom:2px;
+  width:172px;height:150px;
+  -webkit-tap-highlight-color:transparent;
+}
+.lamp .dome{
+  position:absolute;left:26px;top:0;
+  width:120px;height:60px;
+  border-radius:120px 120px 0 0;
+  background:var(--line);
+  transition:background var(--t) ease;
+}
+.lamp .stem{
+  position:absolute;left:84px;top:60px;
+  width:4px;height:86px;
+  background:var(--line);
+  transition:background var(--t) ease;
+}
+.lamp .base{
+  position:absolute;left:52px;bottom:0;
+  width:68px;height:4px;
+  background:var(--line);
+  transition:background var(--t) ease;
+}
+/* light — a flat cone, only at night */
+.lamp .light{
+  position:absolute;left:14px;top:60px;
+  width:144px;height:74px;
+  background:var(--mustard);
+  clip-path:polygon(29% 0, 71% 0, 100% 100%, 0 100%);
+  opacity:calc(var(--glow) * .4);
+  transition:opacity var(--t) ease;
+  pointer-events:none;
+}
+@media (hover:hover) and (pointer:fine){
+  .lamp:hover .dome{opacity:.82}
+}
+.lamp:focus-visible{outline:2px solid var(--ink-soft);outline-offset:6px}
+
+/* ============================================================
+   OBJECTS — whimsy on the About shelf + a digital clock
+   ============================================================ */
+.obj{position:absolute;pointer-events:none;transition:background var(--t) ease,filter var(--t) ease}
+@supports not (clip-path: path('M0 0H1V1Z')){
+  .fish{display:none}
+}
+.fish{
+  left:130px;bottom:54px;width:54px;height:24px;
+  background:var(--lblue);
+  clip-path:path('M0 12 C4 5, 13 1, 22 1 C32 1, 40 6, 44 12 C40 18, 32 23, 22 23 C13 23, 4 19, 0 12 Z M42 12 C47 7, 51 4, 54 3 C52.5 7, 52.5 10, 53.5 12 C52.5 14, 52.5 17, 54 21 C51 20, 47 17, 42 12 Z');
+}
+.fish::after{
+  content:"";position:absolute;left:8px;top:9px;
+  width:4px;height:4px;border-radius:50%;
+  background:var(--bg);
+  transition:background var(--t) ease;
+}
+.star{
+  left:214px;bottom:54px;width:34px;height:34px;
+  overflow:visible;
+}
+.star path{
+  fill:var(--mustard);
+  /* stroke matches fill by day (keeps the rounded points, no visible border),
+     switches to a light outline at night */
+  stroke:var(--mustard);stroke-width:3;stroke-linejoin:round;stroke-linecap:round;
+  transition:fill var(--t) ease,stroke var(--t) ease;
+}
+body.dark .star path{stroke:var(--line)}
+body.dark .star{filter:drop-shadow(0 0 7px rgba(224,179,47,.75))}
+
+/* potted cactus, right of the Contact book */
+.plant{
+  position:absolute;left:292px;bottom:2px;
+  width:44px;height:70px;
+  pointer-events:none;
+}
+.plant .c{
+  position:absolute;
+  background:var(--cactus);
+  transition:background var(--t) ease;
+}
+.plant .trunk{left:15px;bottom:24px;width:14px;height:38px;border-radius:7px 7px 0 0}
+.plant .armL-h{left:3px;bottom:36px;width:14px;height:8px;border-radius:0 0 0 6px}
+.plant .armL-v{left:3px;bottom:36px;width:9px;height:19px;border-radius:5px 5px 0 0}
+.plant .sp{
+  position:absolute;width:5px;height:2px;border-radius:1px;
+  background:var(--cactus-spike);
+  transition:background var(--t) ease;
+}
+.plant .sp1{left:17px;bottom:54px}
+.plant .sp2{left:23px;bottom:47px}
+.plant .sp3{left:17px;bottom:33px}
+.plant .sp4{left:23px;bottom:40px}
+.plant .sp5{left:5px;bottom:47px;width:4px}
+.plant .sp6{left:19px;bottom:58px}
+.plant .rim{
+  position:absolute;left:0;bottom:18px;width:44px;height:6px;
+  background:var(--rust);
+  transition:background var(--t) ease;
+}
+.plant .pot{
+  position:absolute;left:4px;bottom:0;width:36px;height:19px;
+  background:var(--rust);
+  border-radius:2px 2px 5px 5px;
+  clip-path:polygon(3% 0, 97% 0, 93% 100%, 7% 100%);
+  transition:background var(--t) ease;
+}
+
+/* small round clock, standing left of the lamp */
+.clock{
+  position:absolute;left:68px;bottom:28px;
+  width:36px;height:36px;
+  pointer-events:none;
+}
+.clock .face{
+  position:absolute;inset:0;border-radius:50%;
+  border:3.5px solid var(--rust);
+  background:var(--bg);
+  transition:background var(--t) ease,border-color var(--t) ease;
+}
+.clock .hand{
+  position:absolute;left:50%;bottom:50%;
+  transform-origin:bottom center;border-radius:2px;
+  background:var(--rust);
+  transition:background var(--t) ease;
+}
+.clock .hand.h{width:3.5px;height:8px;margin-left:-1.75px}
+.clock .hand.m{width:3px;height:12px;margin-left:-1.5px}
+.clock .pin{
+  position:absolute;left:50%;top:50%;
+  width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;
+  background:var(--rust);
+  transition:background var(--t) ease;
+}
+
+/* shelf positions */
+.s1{top:0;height:216px}
+.s2{top:268px;height:70px}
+.s3{top:390px;height:98px}
+.s4{top:500px;height:100px}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms!important}
+}
+/* short desktop windows: shrink toward the right edge */
+@media (min-width:901px) and (max-height:760px){
+  .scene{transform:translateY(-50%) scale(.85);transform-origin:right center}
+}
+/* tablets & phones: center the shelf, name on top */
+@media (max-width:900px){
+  .name{left:50%;top:6vh;transform:translateX(-50%);text-align:center}
+  .name::after{margin-left:auto;margin-right:auto}
+  .scene{right:50%;top:54%;transform:translate(50%,-50%) scale(.9)}
+}
+@media (max-width:520px){
+  .scene{transform:translate(50%,-50%) scale(.74)}
+  .paper .lines{padding-left:96px;padding-right:18px}
+  .prow .theme{font-size:11px;letter-spacing:.16em}
+  .prow .years{font-size:10.5px}
+  .spread .pg{padding:40px 30px 46px}
+}
+/* short phones: shrink further (intentionally overrides the 520px scale) */
+@media (max-width:520px) and (max-height:700px){
+  .scene{transform:translate(50%,-50%) scale(.68)}
+}
+
+/* ============================================================
+   OVERLAYS — flat, thin-ruled
+   ============================================================ */
+.reader,.modal{
+  position:fixed;inset:0;z-index:20;
+  display:flex;align-items:center;justify-content:center;
+  visibility:hidden;pointer-events:none;
+}
+.reader.open,.modal.open{visibility:visible;pointer-events:auto}
+.modal.open{background:rgba(242,233,219,.72)} /* fallback */
+body.dark .modal.open{background:rgba(36,24,9,.72)}
+@supports (background:color-mix(in srgb, red 50%, transparent)){
+  .modal.open,body.dark .modal.open{background:color-mix(in srgb, var(--bg) 72%, transparent)}
+}
+
+.reader .pop,.modal .card{
+  opacity:0;transform:translateY(14px);
+  transition:transform .25s cubic-bezier(.2,.8,.25,1),opacity .2s ease,
+             background var(--t) ease,border-color var(--t) ease;
+}
+.reader.open .pop,.modal.open .card{opacity:1;transform:none}
+
+.placeholder{color:var(--ink-soft);font-style:italic}
+.closer{
+  position:absolute;top:14px;right:16px;z-index:2;
+  font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);
+  padding:14px 16px;
+}
+.closer:hover{color:var(--ink)}
+
+/* ── ABOUT · an open book spread ── */
+.spread{
+  position:relative;
+  display:flex;
+  width:min(760px,92vw);max-height:78vh;
+  background:var(--bg);
+  border:2px solid var(--line);
+  color:var(--ink);
+}
+.spread .pg{
+  flex:1;min-width:0;overflow:auto;
+  padding:54px 44px 52px;
+  position:relative;
+}
+.spread .pg.l{border-right:2px solid var(--line)}
+.spread h2{
+  font-size:17px;font-weight:500;letter-spacing:.34em;text-transform:uppercase;
+  margin-bottom:26px;
+}
+.spread p{font-size:14px;line-height:1.95;font-weight:400;margin-bottom:14px}
+.spread .pno{
+  position:absolute;bottom:16px;
+  font-size:10px;letter-spacing:.22em;color:var(--ink-soft);
+}
+.spread .pg.l .pno{left:26px}
+.spread .pg.r .pno{right:26px}
+@media (max-width:640px){
+  .spread{flex-direction:column}
+  .spread .pg.l{border-right:none;border-bottom:2px solid var(--line)}
+}
+
+/* ── PROJECTS · foolscap paper ── */
+.paper{
+  position:relative;
+  width:min(560px,90vw);height:min(640px,80vh);
+  overflow:auto;
+  color:#3c4552;
+  background-image:
+    linear-gradient(90deg, transparent 0 79px, #e05d5d 79px 81px, transparent 81px),
+    repeating-linear-gradient(180deg, transparent 0 27.5px, #a9c8dc 27.5px 29px),
+    linear-gradient(#fbf8f1,#fbf8f1);
+  box-shadow:0 24px 60px rgba(20,12,2,.35);
+}
+.paper .hole{
+  position:absolute;left:71px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--bg);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.22);
+  transition:background var(--t) ease;
+}
+.paper .hole.h1{top:16%}
+.paper .hole.h2{top:48%}
+.paper .hole.h3{top:80%}
+.paper .closer{color:#9aa4b0}
+.paper .closer:hover{color:#3c4552}
+.paper .lines{
+  padding:58px 36px 40px 104px;
+}
+.paper h2{
+  font-size:16px;font-weight:500;letter-spacing:.34em;text-transform:uppercase;
+  line-height:29px;margin-bottom:29px;
+}
+.prow{
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  line-height:29px;height:29px;white-space:nowrap;
+}
+.prow .theme{
+  font-size:13px;letter-spacing:.26em;text-transform:uppercase;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.prow .years{font-size:12px;color:#8c96a3;font-weight:400;letter-spacing:.1em}
+.paper .note{
+  margin-top:29px;font-size:12.5px;line-height:29px;
+  color:#8c96a3;font-weight:400;font-style:italic;
+}
+
+/* ── the card: pale yellow paper, typewriter type, embossed horse ── */
+.modal .card{
+  width:min(470px,92vw);min-height:294px;
+  padding:34px 38px 30px;position:relative;
+  max-height:85vh;overflow:auto;
+  background:#f5efb4;
+  color:#3c3a33;
+  font-family:'Courier New',Courier,monospace;
+  box-shadow:0 26px 60px rgba(40,30,5,.32);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  text-align:center;
+  transform:translateY(14px) rotate(-.4deg);
+}
+.modal.open .card{transform:rotate(-.4deg)}
+body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)}
+.modal .card .who{margin-top:10px;font-size:14.5px;line-height:1.75;font-weight:500}
+.modal .card .cl{font-size:12.5px;line-height:2.05;position:relative;z-index:1}
+.modal .card a{color:inherit;text-decoration:none}
+.modal .card a:hover{opacity:.6}
+.modal .card a:focus-visible{outline:1.5px solid #9a9264;outline-offset:2px}
+.modal .closer{color:#9a9264}
+.modal .closer:hover{color:#3c3a33}
+.horse{
+  position:absolute;left:14px;top:34px;
+  font-family:'Courier New',Courier,monospace;
+  font-size:8.5px;line-height:1.2;white-space:pre;
+  color:#57500f;opacity:.17;
+  user-select:none;pointer-events:none;
+}
+.vh{ /* visually hidden, kept for screen readers */
+  position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;
+}
+</style>
+</head>
+<body>
+
+<main class="room" id="room">
+
+  <h1 class="name">Hazel</h1>
+
+  <div class="scene">
+
+    <!-- shelf 1 · book + lamp -->
+    <div class="shelf s1">
+      <div class="book" style="left:36px;bottom:2px;width:200px;height:26px;background:var(--cream)"></div>
+      <div class="clock" aria-hidden="true">
+        <span class="face">
+          <span class="hand h" id="handH"></span>
+          <span class="hand m" id="handM"></span>
+          <span class="pin"></span>
+        </span>
+      </div>
+      <button class="lamp" id="lamp" aria-label="Toggle light and dark mode" style="bottom:28px">
+        <span class="light"></span>
+        <span class="dome"></span>
+        <span class="stem"></span>
+        <span class="base"></span>
+      </button>
+      <div class="plank"></div>
+    </div>
+
+    <!-- shelf 2 · about, with company -->
+    <div class="shelf s2">
+      <div class="book" style="left:52px;bottom:2px;width:224px;height:22px;background:var(--pink)"></div>
+      <button class="book" id="bookAbout"
+              style="left:24px;bottom:24px;width:252px;height:30px;background:var(--rust);color:#f6ecdd">
+        <span>About</span>
+      </button>
+      <div class="obj fish" aria-hidden="true"></div>
+      <svg class="obj star" viewBox="0 0 34 34" aria-hidden="true">
+        <path d="M17 2 L20.5 12.2 L31.3 12.4 L22.7 18.9 L25.8 29.1 L17 23 L8.2 29.1 L11.3 18.9 L2.7 12.4 L13.5 12.2 Z"/>
+      </svg>
+      <div class="plank"></div>
+    </div>
+
+    <!-- shelf 3 · projects -->
+    <div class="shelf s3">
+      <div class="book" style="left:64px;bottom:2px;width:188px;height:24px;background:var(--mustard)"></div>
+      <button class="book" id="bookProjects"
+              style="left:12px;bottom:26px;width:276px;height:32px;background:var(--teal);color:#0e2f2b">
+        <span>Projects</span>
+      </button>
+      <div class="book" style="left:56px;bottom:58px;width:218px;height:20px;background:var(--cream)"></div>
+      <div class="plank"></div>
+    </div>
+
+    <!-- shelf 4 · contact -->
+    <div class="shelf s4">
+      <div class="book" style="left:30px;bottom:2px;width:240px;height:24px;background:var(--navy)"></div>
+      <div class="book" style="left:52px;bottom:26px;width:200px;height:22px;background:var(--burnt)"></div>
+      <button class="book" id="bookContact"
+              style="left:44px;bottom:48px;width:212px;height:26px;background:var(--pink);color:#5d3a2a">
+        <span>Contact</span>
+      </button>
+      <div class="plant" aria-hidden="true">
+        <span class="c armL-h"></span><span class="c armL-v"></span>
+        <span class="c trunk"></span>
+        <span class="sp sp1"></span><span class="sp sp2"></span><span class="sp sp3"></span>
+        <span class="sp sp4"></span><span class="sp sp5"></span><span class="sp sp6"></span>
+        <span class="rim"></span>
+        <span class="pot"></span>
+      </div>
+      <div class="plank"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══════════════ ABOUT · open book ══════════════ -->
+<section class="reader" id="reader" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+  <div class="spread pop">
+    <button class="closer" data-close>Close</button>
+    <div class="pg l">
+      <h2 id="aboutTitle">About</h2>
+      <p class="placeholder">[ placeholder — your bio starts here on the left page ]</p>
+      <span class="pno">01</span>
+    </div>
+    <div class="pg r">
+      <p class="placeholder">[ placeholder — and continues here on the right page:
+      background, what you're drawn to, what you're making now ]</p>
+      <span class="pno">02</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PROJECTS · foolscap ══════════════ -->
+<section class="reader" id="projectsPage" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="projectsTitle">
+  <div class="paper pop">
+    <button class="closer" data-close>Close</button>
+    <span class="hole h1"></span><span class="hole h2"></span><span class="hole h3"></span>
+    <div class="lines">
+      <h2 id="projectsTitle">Projects</h2>
+      <div class="prow"><span class="theme">[ Theme one ]</span><span class="years">2024 — 2026</span></div>
+      <div class="prow"><span class="theme">[ Theme two ]</span><span class="years">2023 — 2024</span></div>
+      <div class="prow"><span class="theme">[ Theme three ]</span><span class="years">2021 — 2023</span></div>
+      <p class="note">each line becomes a shelf of project-books, arranged by year</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CONTACT ══════════════ -->
+<div class="modal" id="contactModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="card">
+    <button class="closer" data-close>Close</button>
+    <h2 id="contactTitle" class="vh">Contact</h2>
+    <pre class="horse" aria-hidden="true">     &gt;&gt;\.
+    /_  )`.
+   /  _)`^)`.   _.---. _
+  (_,' \  `^-)""      `.\
+        |              | \
+        \              / |
+       / \  /.___.'\  (\ (_
+      &lt; ,"||     \ |`. \`-'
+       \\ ()      )|  )/
+       |_&gt;|&gt;     /_] //
+         /_]        /_]</pre>
+    <p class="who">Hazel (Ding) Sarwar</p>
+    <div class="cl">
+      <div><a href="mailto:hazel@brownish.studio">hazel [at] brownish [dot] studio</a></div>
+      <div><a href="https://instagram.com/friendlyamendment" target="_blank" rel="noopener">IG @friendlyamendment</a></div>
+      <div><a href="https://www.are.na/hazel" target="_blank" rel="noopener">are.na https://www.are.na/hazel</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── safe storage (private-browsing modes can throw) ── */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+};
+
+/* ── lamp: instant theme toggle ── */
+const lampEl = document.getElementById('lamp');
+if (store.get('hazel-theme') === 'dark') document.body.classList.add('dark');
+lampEl.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  store.set('hazel-theme',
+    document.body.classList.contains('dark') ? 'dark' : 'light');
+});
+
+/* ── overlays: open/close with focus management ── */
+const room     = document.getElementById('room');
+const reader   = document.getElementById('reader');
+const projects = document.getElementById('projectsPage');
+const modal    = document.getElementById('contactModal');
+const overlays = [reader, projects, modal];
+let lastFocus = null;
+
+function anyOpen(){ return overlays.some(o => o.classList.contains('open')); }
+
+function closeAll(restoreFocus = true){
+  overlays.forEach(o => {
+    o.classList.remove('open');
+    o.setAttribute('aria-hidden','true');
+  });
+  room.inert = false;
+  if (restoreFocus && lastFocus){ lastFocus.focus(); }
+  lastFocus = null;
+}
+
+function openOverlay(el){
+  closeAll(false);
+  lastFocus = document.activeElement;
+  el.classList.add('open');
+  el.setAttribute('aria-hidden','false');
+  room.inert = true;                       /* background unreachable while open */
+  const f = el.querySelector('[data-close], a[href], button');
+  if (f) f.focus();
+}
+
+document.getElementById('bookAbout').addEventListener('click', () => openOverlay(reader));
+document.getElementById('bookProjects').addEventListener('click', () => openOverlay(projects));
+document.getElementById('bookContact').addEventListener('click', () => openOverlay(modal));
+
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeAll()));
+overlays.forEach(o => o.addEventListener('click', e => { if (e.target === o) closeAll(); }));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && anyOpen()) closeAll();
+});
+
+/* ── clock, real time (minute resolution) ── */
+const handH = document.getElementById('handH');
+const handM = document.getElementById('handM');
+function tick(){
+  const d = new Date();
+  const h = d.getHours() % 12, m = d.getMinutes();
+  handH.style.transform = `rotate(${h * 30 + m * .5}deg)`;
+  handM.style.transform = `rotate(${m * 6}deg)`;
+}
+tick();
+setInterval(tick, 30000);
+</script>
+</body>
+</html>
