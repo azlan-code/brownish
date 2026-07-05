@@ -53,7 +53,7 @@ body.dark{
 ::selection{background:#f9c6d3;color:#3c3a33} /* baby-pink text highlight */
 html,body{height:100%}
 body{
-  font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-family:'Helvetica Neue',Helvetica,sans-serif;
   background:var(--bg);
   color:var(--ink);
   overflow:hidden;
@@ -68,19 +68,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
   position:fixed;inset:0;
 }
 
-/* name — quiet, top left, lots of air */
-.name{
-  position:absolute;left:9vw;top:11vh;
-  font-size:15px;font-weight:500;
-  letter-spacing:.44em;text-transform:uppercase;
+/* intro — two clean lines of text, level with the shelves */
+.intro{
+  position:absolute;left:11vw;top:50%;
+  transform:translateY(-50%);
+  font-size:18px;font-weight:400;line-height:1.85;
+  letter-spacing:.01em;
   color:var(--ink);
   transition:color var(--t) ease;
-}
-.name::after{
-  content:"";display:block;
-  width:2.2em;height:2px;background:var(--line);
-  margin-top:14px;
-  transition:background var(--t) ease;
 }
 
 /* ============================================================
@@ -275,16 +270,16 @@ body.dark .star{filter:drop-shadow(0 0 7px rgba(224,179,47,.75))}
 }
 /* tablets & phones: center the shelf, name on top */
 @media (max-width:900px){
-  .name{left:50%;top:6vh;transform:translateX(-50%);text-align:center}
-  .name::after{margin-left:auto;margin-right:auto}
-  .scene{right:50%;top:54%;transform:translate(50%,-50%) scale(.9)}
+  .intro{left:50%;top:8vh;transform:translateX(-50%);text-align:center;width:88vw;font-size:15px}
+  .scene{right:50%;top:56%;transform:translate(50%,-50%) scale(.9)}
 }
 @media (max-width:520px){
   .scene{transform:translate(50%,-50%) scale(.74)}
   .paper .lines{padding-left:96px;padding-right:18px}
-  .prow .theme{font-size:11px;letter-spacing:.16em}
-  .prow .years{font-size:10.5px}
-  .spread .pg{padding:40px 30px 46px}
+  .prow{gap:8px}
+  .prow .yr{width:40px;font-size:10px}
+  .prow .pt{font-size:11.5px}
+  .prow .aff{display:none}
 }
 /* short phones: shrink further (intentionally overrides the 520px scale) */
 @media (max-width:520px) and (max-height:700px){
@@ -316,46 +311,82 @@ body.dark .modal.open{background:rgba(36,24,9,.72)}
 .placeholder{color:var(--ink-soft);font-style:italic}
 .closer{
   position:absolute;top:14px;right:16px;z-index:2;
-  font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);
+  font-family:'Courier New',Courier,monospace;
+  font-size:13px;color:var(--ink-soft);
   padding:14px 16px;
 }
 .closer:hover{color:var(--ink)}
 
-/* ── ABOUT · an open book spread ── */
+/* ── ABOUT · an open book ── */
 .spread{
   position:relative;
   display:flex;
-  width:min(760px,92vw);max-height:78vh;
-  background:var(--bg);
-  border:2px solid var(--line);
-  color:var(--ink);
+  width:min(820px,94vw);max-height:80vh;
+  color:#3f3a30;
+  font-family:'Courier New',Courier,monospace;
+  filter:drop-shadow(0 28px 44px rgba(40,25,5,.35));
 }
+body.dark .spread{filter:drop-shadow(0 28px 54px rgba(0,0,0,.6))}
 .spread .pg{
   flex:1;min-width:0;overflow:auto;
-  padding:54px 44px 52px;
+  padding:54px 52px 54px;
   position:relative;
 }
-.spread .pg.l{border-right:2px solid var(--line)}
-.spread h2{
-  font-size:17px;font-weight:500;letter-spacing:.34em;text-transform:uppercase;
-  margin-bottom:26px;
+.spread .pg.l{
+  background:linear-gradient(90deg,#f8f1e1 0%,#f5edda 90%,#efe4cd 98%,#e8dbc0 100%);
+  border-radius:7px 1px 1px 7px;
 }
-.spread p{font-size:14px;line-height:1.95;font-weight:400;margin-bottom:14px}
+.spread .pg.r{
+  background:linear-gradient(270deg,#f8f1e1 0%,#f5edda 90%,#f0e5d0 98%,#eaddc4 100%);
+  border-radius:1px 7px 7px 1px;
+}
+/* the closed pages stacked beneath */
+.spread::before{
+  content:"";position:absolute;left:5px;right:5px;bottom:-6px;height:8px;z-index:-1;
+  background:linear-gradient(180deg,#e9ddc3,#c9b88f);
+  border-radius:0 0 9px 9px;
+}
+.spread::after{
+  content:"";position:absolute;left:12px;right:12px;bottom:-11px;height:7px;z-index:-2;
+  background:linear-gradient(180deg,#dccfae,#b3a077);
+  border-radius:0 0 9px 9px;
+}
+.spread h2{
+  font-size:16px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;
+  margin-bottom:22px;
+}
+/* one text size across the spread: 14px body, 16px heading, 10px folios */
+.spread p{font-size:14px;line-height:1.9;font-weight:400;margin-bottom:14px}
+.spread .lead{margin-top:6px}
+.spread .lead em{font-style:italic}
+.spread .tight{margin-bottom:7px}
 .spread .pno{
   position:absolute;bottom:16px;
-  font-size:10px;letter-spacing:.22em;color:var(--ink-soft);
+  font-family:'Courier New',Courier,monospace;
+  font-size:10px;letter-spacing:.2em;color:#a3977d;
 }
 .spread .pg.l .pno{left:26px}
 .spread .pg.r .pno{right:26px}
+.headshot{
+  display:block;width:128px;height:auto;
+  border-radius:2px;
+  box-shadow:0 4px 12px rgba(40,25,5,.25);
+  margin:2px 0 24px 0;
+}
+.spread .closer{color:#a3977d}
+.spread .closer:hover{color:#3f3a30}
 @media (max-width:640px){
-  .spread{flex-direction:column}
-  .spread .pg.l{border-right:none;border-bottom:2px solid var(--line)}
+  /* one continuous scrolling book instead of two tiny scroll panes */
+  .spread{flex-direction:column;overflow:auto;max-height:86vh}
+  .spread .pg{flex:none;overflow:visible;padding:36px 28px 40px}
+  .spread .pg.l{border-radius:7px 7px 1px 1px;background:linear-gradient(180deg,#f8f1e1 0%,#f5edda 84%,#e7dabf 97%,#d3c3a2 100%)}
+  .spread .pg.r{border-radius:1px 1px 7px 7px;background:linear-gradient(0deg,#f8f1e1 0%,#f5edda 84%,#eadec5 97%,#d9c9a9 100%)}
 }
 
 /* ── PROJECTS · foolscap paper ── */
 .paper{
   position:relative;
-  width:min(560px,90vw);height:min(640px,80vh);
+  width:min(640px,92vw);height:min(680px,82vh);
   overflow:auto;
   color:#3c4552;
   background-image:
@@ -380,21 +411,32 @@ body.dark .modal.open{background:rgba(36,24,9,.72)}
   padding:58px 36px 40px 104px;
 }
 .paper h2{
-  font-size:16px;font-weight:500;letter-spacing:.34em;text-transform:uppercase;
+  font-family:'Courier New',Courier,monospace;
+  font-size:16px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;
   line-height:29px;margin-bottom:29px;
 }
 .prow{
-  display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  display:flex;align-items:baseline;gap:12px;
   line-height:29px;height:29px;white-space:nowrap;
 }
-.prow .theme{
-  font-size:13px;letter-spacing:.26em;text-transform:uppercase;
-  overflow:hidden;text-overflow:ellipsis;
+.prow .yr{
+  flex:none;width:48px;font-size:11px;color:#8c96a3;letter-spacing:.02em;
+  font-family:'Courier New',Courier,monospace;
 }
-.prow .years{font-size:12px;color:#8c96a3;font-weight:400;letter-spacing:.1em}
-.paper .note{
-  margin-top:29px;font-size:12.5px;line-height:29px;
-  color:#8c96a3;font-weight:400;font-style:italic;
+.prow .pt{
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  font-size:14px;color:inherit;text-decoration:none;
+}
+.prow a.pt:hover{opacity:.55}
+.prow a.pt:focus-visible{outline:1.5px solid #8c96a3;outline-offset:2px}
+.prow .aff{
+  flex:none;font-size:10.5px;color:#8c96a3;letter-spacing:.02em;
+  font-family:'Courier New',Courier,monospace;
+}
+.paper h3{
+  font-family:'Courier New',Courier,monospace;
+  font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
+  line-height:29px;height:29px;margin-top:29px;
 }
 
 /* ── the card: pale yellow paper, typewriter type, embossed horse ── */
@@ -412,7 +454,7 @@ body.dark .modal.open{background:rgba(36,24,9,.72)}
 }
 .modal.open .card{transform:rotate(-.4deg)}
 body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)}
-.modal .card .who{margin-top:10px;font-size:14.5px;line-height:1.75;font-weight:500}
+.modal .card .who{margin-top:10px;font-size:14px;line-height:1.75;font-weight:700}
 .modal .card .cl{font-size:12.5px;line-height:2.05;position:relative;z-index:1}
 .modal .card a{color:inherit;text-decoration:none}
 .modal .card a:hover{opacity:.6}
@@ -423,7 +465,7 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
   position:absolute;left:14px;top:34px;
   font-family:'Courier New',Courier,monospace;
   font-size:8.5px;line-height:1.2;white-space:pre;
-  color:#57500f;opacity:.17;
+  color:#57500f;opacity:.32;
   user-select:none;pointer-events:none;
 }
 .vh{ /* visually hidden, kept for screen readers */
@@ -436,7 +478,8 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
 
 <main class="room" id="room">
 
-  <h1 class="name">Hazel</h1>
+  <h1 class="intro">Hazel Sarwar is a marketer, researcher,<br>
+  and artist based in New York City.</h1>
 
   <div class="scene">
 
@@ -509,15 +552,24 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
 <!-- ══════════════ ABOUT · open book ══════════════ -->
 <section class="reader" id="reader" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
   <div class="spread pop">
-    <button class="closer" data-close>Close</button>
+    <button class="closer" data-close aria-label="Close">[x]</button>
     <div class="pg l">
       <h2 id="aboutTitle">About</h2>
-      <p class="placeholder">[ placeholder — your bio starts here on the left page ]</p>
+      <img class="headshot" src="assets/images/hazel-web.jpg" alt="Hazel (Ding) Sarwar" width="128">
+      <p class="lead">Hazel (Ding) Sarwar (b.2001, Singapore)<br>
+      <em>is a marketer, researcher, and artist based in New York City.</em></p>
       <span class="pno">01</span>
     </div>
     <div class="pg r">
-      <p class="placeholder">[ placeholder — and continues here on the right page:
-      background, what you're drawn to, what you're making now ]</p>
+      <p>They are trained in political theory, and study emerging technology,
+      the business of manufacturing desires, and governance online and offline.</p>
+      <p>Their life&rsquo;s work is to dream a &ldquo;dream of a common
+      language&rdquo; (cf. Adrienne Rich).</p>
+      <p style="margin-top:30px">Interests</p>
+      <p class="tight">1. Southeast Asian identities; postcolonial futurism; diasporic literature and politics</p>
+      <p class="tight">2. our political and culture present</p>
+      <p class="tight">3. queerness in technology</p>
+      <p class="tight">4. community building, subcultures, and cultural rebellions</p>
       <span class="pno">02</span>
     </div>
   </div>
@@ -526,14 +578,32 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
 <!-- ══════════════ PROJECTS · foolscap ══════════════ -->
 <section class="reader" id="projectsPage" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="projectsTitle">
   <div class="paper pop">
-    <button class="closer" data-close>Close</button>
+    <button class="closer" data-close aria-label="Close">[x]</button>
     <span class="hole h1"></span><span class="hole h2"></span><span class="hole h3"></span>
     <div class="lines">
       <h2 id="projectsTitle">Projects</h2>
-      <div class="prow"><span class="theme">[ Theme one ]</span><span class="years">2024 — 2026</span></div>
-      <div class="prow"><span class="theme">[ Theme two ]</span><span class="years">2023 — 2024</span></div>
-      <div class="prow"><span class="theme">[ Theme three ]</span><span class="years">2021 — 2023</span></div>
-      <p class="note">each line becomes a shelf of project-books, arranged by year</p>
+      <h3>Current</h3>
+      <div class="prow"><span class="yr">2025–</span><a class="pt" href="https://brownish.studio/" target="_blank" rel="noopener">Brownish Studio</a><span class="aff">Studio Practice</span></div>
+      <div class="prow"><span class="yr">2022–</span><a class="pt" href="https://pactcollective.xyz/" target="_blank" rel="noopener">Pact Collective</a><span class="aff">Organising</span></div>
+      <h3>Past</h3>
+      <div class="prow"><span class="yr">2025</span><a class="pt" href="https://www.lhune.com/" target="_blank" rel="noopener">LHUNE</a><span class="aff">Marketing</span></div>
+      <div class="prow"><span class="yr">2025</span><a class="pt" href="https://lekondo.com/" target="_blank" rel="noopener">Lekondo</a><span class="aff">Growth</span></div>
+      <div class="prow"><span class="yr">2025</span><a class="pt" href="https://lekondo.com/ontology" target="_blank" rel="noopener">The Ontology of Wearable Aesthetics</a><span class="aff">Essay</span></div>
+      <div class="prow"><span class="yr">2025</span><a class="pt" href="https://substack.com/@hazelsarwar/p-185129680" target="_blank" rel="noopener">Brutalism, Explained</a><span class="aff">Essay</span></div>
+      <div class="prow"><span class="yr">2024</span><a class="pt" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5164782" target="_blank" rel="noopener">State of DAO M&amp;As</a><span class="aff">Research</span></div>
+      <div class="prow"><span class="yr">2024</span><a class="pt" href="https://t.co/DJ2MpbIgBc" target="_blank" rel="noopener">State of Web3 Grants</a><span class="aff">Research</span></div>
+      <div class="prow"><span class="yr">2023</span><a class="pt" href="https://metagov.github.io/d20-governance/" target="_blank" rel="noopener">D20 Governance Game (Github)</a><span class="aff">Game</span></div>
+      <div class="prow"><span class="yr">2023</span><a class="pt" href="https://docs.google.com/document/d/19f0cuJ8jzNGw9U2y0OHpubiMNoKb_ged99I_BSdLA4E/edit" target="_blank" rel="noopener">State of Web3 Labor &amp; Compensation</a><span class="aff">Research</span></div>
+      <div class="prow"><span class="yr">2021</span><a class="pt" href="https://drive.google.com/file/d/1Ov87Suek7aA8_OCihc1Srli6Lm2Wrj7A/view" target="_blank" rel="noopener">Wikipedia's Loud Voice Problem</a><span class="aff">Princeton CITP &middot; Research</span></div>
+
+      <h3>Education</h3>
+      <div class="prow"><span class="yr">2024</span><span class="pt">Duke University</span><span class="aff">B.A. in Political Theory</span></div>
+      <div class="prow"><span class="yr">2022</span><a class="pt" href="https://www.deepsprings.edu/" target="_blank" rel="noopener">Deep Springs College</a><span class="aff">Liberal Arts</span></div>
+
+      <h3>Talks</h3>
+      <div class="prow"><span class="yr">2024</span><a class="pt" href="https://archive.org/details/tech-for-governable-spaces" target="_blank" rel="noopener">Governable Spaces &amp; D20</a><span class="aff">Brooklyn Public Library</span></div>
+      <div class="prow"><span class="yr">2024</span><a class="pt" href="https://www.youtube.com/watch?v=SerC9wYOMHs" target="_blank" rel="noopener">Design Principles of D20</a><span class="aff">Active Inference Org</span></div>
+      <div class="prow"><span class="yr">2024</span><a class="pt" href="https://program.foss-backstage.de/fossback24/talk/N3VMFY/" target="_blank" rel="noopener">Exit to Community: OSS and E2C</a><span class="aff">FOSS Backstage</span></div>
     </div>
   </div>
 </section>
@@ -541,7 +611,7 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
 <!-- ══════════════ CONTACT ══════════════ -->
 <div class="modal" id="contactModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
   <div class="card">
-    <button class="closer" data-close>Close</button>
+    <button class="closer" data-close aria-label="Close">[x]</button>
     <h2 id="contactTitle" class="vh">Contact</h2>
     <pre class="horse" aria-hidden="true">     &gt;&gt;\.
     /_  )`.
