@@ -1,20 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brownish Studio</title>
+    <script>/* GitHub Pages serves this file for the bare "/index" path; send that to the Index page */
+    if (location.pathname.replace(/\/+$/, '') === '/index') location.replace('/index/' + location.search + location.hash);</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
 </head>
 <body class="font-['Fragment_Mono',monospace] bg-[url('assets/images/home_bg.png')] bg-center bg-no-repeat bg-[length:auto_100vh] min-h-screen m-0 flex justify-center">
-    <div class="flex justify-between items-center h-full w-[70vw]">
+    <div class="flex flex-col sm:flex-row justify-center sm:justify-between items-start sm:items-center gap-10 sm:gap-0 h-full w-[70vw]">
         <div>
-            <h1 class="m-0 font-thin text-[64px] tracking-tight">BROWNISH</h1>
-            <h1 class="m-0 font-thin text-[64px] tracking-tight">STUDIO</h1>
+            <h1 class="m-0 font-thin text-[44px] sm:text-[64px] tracking-tight">BROWNISH</h1>
+            <h1 class="m-0 font-thin text-[44px] sm:text-[64px] tracking-tight">STUDIO</h1>
+            <h1 class="m-0 font-thin text-[44px] sm:text-[64px] tracking-tight">IS ...</h1>
         </div>
         <div>
-            <h2 class="mt-0 mb-2 font-thin text-[40px] tracking-tight"><a href="/restaurants" class="no-underline text-inherit">/RESTAURANTS</a></h2>
-            <h2 class="mt-0 mb-2 font-thin text-[40px] tracking-tight"><a class="no-underline text-inherit">/CLUB SELAT</a></h2>
-            <h2 class="mt-0 mb-2 font-thin text-[40px] tracking-tight"><a href="/about" class="no-underline text-inherit">/ABOUT</a></h2>
+            <h2 class="mt-0 mb-2 font-thin text-[26px] sm:text-[40px] tracking-tight"><a href="/index/" class="no-underline text-inherit">/AN INDEX</a></h2>
+            <h2 class="mt-0 mb-2 font-thin text-[26px] sm:text-[40px] tracking-tight"><a href="/club" class="no-underline text-inherit">/A SOCIAL CLUB</a></h2>
+            <h2 class="mt-0 mb-2 font-thin text-[26px] sm:text-[40px] tracking-tight"><a href="/about" class="no-underline text-inherit">/A STUDIO</a></h2>
         </div>
     </div>
 </body>
-
+</html>
