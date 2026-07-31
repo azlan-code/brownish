@@ -11,42 +11,68 @@
     <style>
         :root {
             --ink: #000000;
-            --ink-soft: #000000;
+            --ink-soft: #737373;
             --paper: #ffffff;
-            --rule: #e5e5e5;
+            --rule: #d4d4d4;
         }
     </style>
 </head>
 <body class="font-['Fragment_Mono',monospace] bg-[var(--paper)] text-[var(--ink)] m-0 min-h-screen">
-    <div class="max-w-[720px] mx-auto px-6 pt-12 pb-24">
+    <div class="max-w-[900px] mx-auto px-6 pt-12 pb-24">
 
-        <h1 class="m-0 mb-12 font-thin text-[40px] tracking-tight">Index</h1>
+        <h1 class="m-0 mb-8 font-thin text-[40px] tracking-tight">Index</h1>
 
-        <!-- ledger
-             row anatomy: year · title (link optional) · note
-             to add a row, copy one of the <div class="row"> blocks below -->
-        <div class="text-[14px]">
+        <!-- ledger table
+             anatomy: year cell (rowSpan = number of projects that year) · title (link optional) · note + Github
+             to add a project to a year, add a <tr> inside that year's group and bump the year cell's rowspan.
+             to start a new year, copy a whole group and give its first <tr> a year <td>. -->
+        <table class="w-full border-collapse text-[15px] border border-[var(--rule)]">
+            <tbody>
 
-            <div class="row flex flex-wrap sm:flex-nowrap items-baseline gap-x-4 gap-y-1 py-3 border-b border-[var(--rule)]">
-                <span class="w-[64px] flex-none text-[12px] text-[var(--ink-soft)]">2025–</span>
-                <a href="/restaurants" class="flex-1 min-w-0 no-underline text-inherit hover:opacity-50">Places to Eat</a>
-                <span class="w-full sm:w-auto sm:min-w-0 pl-[80px] sm:pl-0 text-left sm:text-right text-[12px] text-[var(--ink-soft)]">index of SEA restaurants, NYC</span>
-            </div>
+                <!-- 2026 -->
+                <tr class="border-b border-[var(--rule)]">
+                    <td rowspan="3" class="w-[110px] border-r border-[var(--rule)] text-center align-top pt-4 text-[14px]">2026</td>
+                    <td class="py-4 px-5">
+                        <a href="/postcolonial" class="no-underline text-inherit hover:opacity-50">postcolonial</a>
+                    </td>
+                    <td class="py-4 px-5 text-right text-[13px] text-[var(--ink-soft)]">southeast asian fashion curation pop-up concept</td>
+                </tr>
+                <tr class="border-b border-[var(--rule)]">
+                    <td class="py-4 px-5">
+                        <a href="https://fridge.brownish.studio" target="_blank" rel="noopener" class="no-underline text-inherit hover:opacity-50">Fridge</a>
+                    </td>
+                    <td class="py-4 px-5 text-right text-[13px] text-[var(--ink-soft)]">&ldquo;put it on the fridge&rdquo;, a shared, locally hosted to-do list for households <a href="https://github.com/unfriendlyamendment/fridge" target="_blank" rel="noopener" class="underline underline-offset-4 text-inherit hover:opacity-50">[GitHub]</a></td>
+                </tr>
+                <tr class="border-b border-[var(--rule)]">
+                    <td class="py-4 px-5">
+                        <a href="https://tapgpt.brownish.studio/" target="_blank" rel="noopener" class="no-underline text-inherit hover:opacity-50">TapGPT</a>
+                    </td>
+                    <td class="py-4 px-5 text-right text-[13px] text-[var(--ink-soft)]">a really thirsty AI chatbot <a href="https://github.com/azlan-code/TapGPT" target="_blank" rel="noopener" class="underline underline-offset-4 text-inherit hover:opacity-50">[GitHub]</a></td>
+                </tr>
 
-            <div class="row flex flex-wrap sm:flex-nowrap items-baseline gap-x-4 gap-y-1 py-3 border-b border-[var(--rule)]">
-                <span class="w-[64px] flex-none text-[12px] text-[var(--ink-soft)]">2025–</span>
-                <a href="/postcolonial" class="flex-1 min-w-0 no-underline text-inherit hover:opacity-50">postcolonial</a>
-            </div>
+                <!-- 2025 -->
+                <tr class="border-b border-[var(--rule)]">
+                    <td rowspan="3" class="w-[110px] border-r border-[var(--rule)] text-center align-top pt-4 text-[14px]">2025</td>
+                    <td class="py-4 px-5">
+                        <a href="/restaurants" class="no-underline text-inherit hover:opacity-50">southeast asian restaurants in nyc</a>
+                    </td>
+                    <td class="py-4 px-5 text-right text-[13px] text-[var(--ink-soft)]">a living index of SEA restaurants across the city <a href="https://github.com/azlan-code/SEA-Restaurants-NYC" target="_blank" rel="noopener" class="underline underline-offset-4 text-inherit hover:opacity-50">[GitHub]</a></td>
+                </tr>
+                <tr class="border-b border-[var(--rule)]">
+                    <td class="py-4 px-5">
+                        <a href="https://github.com/azlan-code/nyc-subway-display" target="_blank" rel="noopener" class="no-underline text-inherit hover:opacity-50">NYC Subway Display</a>
+                    </td>
+                    <td class="py-4 px-5 text-right text-[13px] text-[var(--ink-soft)]">live subway arrivals on a HUB75 LED matrix, driven by an ESP32-S3 <a href="https://github.com/azlan-code/nyc-subway-display" target="_blank" rel="noopener" class="underline underline-offset-4 text-inherit hover:opacity-50">[GitHub]</a></td>
+                </tr>
+                <tr class="border-b border-[var(--rule)]">
+                    <td class="py-4 px-5">
+                        <a href="https://github.com/azlan-code/nyc-subway-proxy" target="_blank" rel="noopener" class="no-underline text-inherit hover:opacity-50">NYC Subway Proxy</a>
+                    </td>
+                    <td class="py-4 px-5 text-right text-[13px] text-[var(--ink-soft)]">a small AWS-hosted API that makes the MTA's real-time feeds easy to use <a href="https://github.com/azlan-code/nyc-subway-proxy" target="_blank" rel="noopener" class="underline underline-offset-4 text-inherit hover:opacity-50">[GitHub]</a></td>
+                </tr>
 
-            <!-- template rows — fill in together, then uncomment
-            <div class="row flex flex-wrap sm:flex-nowrap items-baseline gap-x-4 gap-y-1 py-3 border-b border-[var(--rule)]">
-                <span class="w-[64px] flex-none text-[12px] text-[var(--ink-soft)]">YEAR</span>
-                <a href="URL" target="_blank" rel="noopener" class="flex-1 min-w-0 no-underline text-inherit hover:opacity-50">PROJECT TITLE</a>
-                <span class="w-full sm:w-auto sm:min-w-0 pl-[80px] sm:pl-0 text-left sm:text-right text-[12px] text-[var(--ink-soft)]">NOTE</span>
-            </div>
-            -->
-
-        </div>
+            </tbody>
+        </table>
 
     </div>
 </body>
