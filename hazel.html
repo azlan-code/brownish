@@ -402,6 +402,7 @@ body.dark .spread{filter:drop-shadow(0 28px 54px rgba(0,0,0,.6))}
     linear-gradient(90deg, transparent 0 79px, #e05d5d 79px 81px, transparent 81px),
     repeating-linear-gradient(180deg, transparent 0 27.5px, #a9c8dc 27.5px 29px),
     linear-gradient(#fbf8f1,#fbf8f1);
+  background-attachment:local; /* ruled lines scroll with the writing */
   box-shadow:0 24px 60px rgba(20,12,2,.35);
 }
 .paper .hole{
@@ -425,7 +426,7 @@ body.dark .spread{filter:drop-shadow(0 28px 54px rgba(0,0,0,.6))}
   line-height:29px;margin-bottom:29px;
 }
 .prow{
-  display:flex;align-items:baseline;gap:12px;
+  display:flex;align-items:flex-start;gap:12px;
   line-height:29px;min-height:29px;
 }
 .prow .yr{
