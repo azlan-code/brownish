@@ -400,6 +400,25 @@ body.dark .spread{filter:drop-shadow(0 28px 54px rgba(0,0,0,.6))}
   background:#f8f1e1;border-radius:4px;
 }
 .backer:hover{color:#3f3a30}
+/* page-turn corners — a folded corner at the foot of the sheet */
+.flip{
+  position:absolute;bottom:0;width:46px;height:46px;z-index:3;cursor:pointer;
+  transition:width .18s ease,height .18s ease;
+}
+.flip.next{right:0;background:linear-gradient(315deg,#d8c8a6 0,#efe3c8 49.5%,rgba(0,0,0,0) 50%);border-radius:0 0 7px 0}
+.flip.prev{left:0;background:linear-gradient(45deg,#d8c8a6 0,#efe3c8 49.5%,rgba(0,0,0,0) 50%);border-radius:0 0 0 7px}
+.flip:hover,.flip:focus-visible{width:62px;height:62px}
+.flip:focus-visible{outline:2px solid #a3977d;outline-offset:3px}
+.flip .fl{
+  position:absolute;bottom:14px;white-space:nowrap;
+  font-family:'Courier New',Courier,monospace;font-size:11px;letter-spacing:.08em;color:#8a7f63;
+  background:#f8f1e1;padding:3px 8px;border-radius:4px;
+  opacity:0;transition:opacity .18s ease;pointer-events:none;
+}
+.flip.next .fl{left:calc(100% + 10px)}  /* outside the book, right of the sheet */
+.flip.prev .fl{right:calc(100% + 10px)} /* outside the book, left of the sheet */
+.flip:hover .fl,.flip:focus-visible .fl{opacity:1}
+@media (hover:none){.flip .fl{opacity:.85}} /* touch: label always faintly visible */
 /* interests chapter */
 .spread .upd{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#a3977d;margin-bottom:18px}
 .ilist{margin:0;padding-left:1.4em;font-size:12.5px;line-height:1.7}
@@ -428,7 +447,10 @@ body.dark .spread{filter:drop-shadow(0 28px 54px rgba(0,0,0,.6))}
 @media (max-width:640px){
   /* one continuous scrolling book instead of two tiny scroll panes */
   .spread{flex-direction:column;overflow:auto;height:min(640px,86vh)}
-  .spread .pg{flex:none;overflow:visible;padding:36px 28px 40px}
+  .spread .pg{flex:none;overflow:visible;padding:36px 28px 56px}
+  /* stacked view scrolls inside the sheet, so keep flip labels inside its edges (the padded foot is empty) */
+  .flip.next .fl{left:auto;right:calc(100% + 8px)}
+  .flip.prev .fl{right:auto;left:calc(100% + 8px)}
   .spread .pg.l{border-radius:7px 7px 1px 1px;background:linear-gradient(180deg,#f8f1e1 0%,#f5edda 84%,#e7dabf 97%,#d3c3a2 100%)}
   .spread .pg.r{border-radius:1px 1px 7px 7px;background:linear-gradient(0deg,#f8f1e1 0%,#f5edda 84%,#eadec5 97%,#d9c9a9 100%)}
 }
@@ -607,6 +629,7 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
   <!-- spread 1 · pages 01–02 -->
   <div class="spread pop cur">
     <button class="closer" data-close aria-label="Close">[x]</button>
+    <button class="flip next" data-flip="1" aria-label="Turn to the next pages"><span class="fl">turn the page &#8594;</span></button>
     <div class="pg l">
       <h2 id="aboutTitle">About</h2>
       <img class="headshot" src="assets/images/hazel-web.jpg" alt="Hazel (Ding) Sarwar" width="128">
@@ -633,6 +656,8 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
   <div class="spread pop">
     <button class="closer" data-close aria-label="Close">[x]</button>
     <button class="backer" data-back aria-label="Back to contents">&#8592; contents</button>
+    <button class="flip prev" data-flip="-1" aria-label="Turn to the previous pages"><span class="fl">&#8592; turn back</span></button>
+    <button class="flip next" data-flip="1" aria-label="Turn to the next pages"><span class="fl">turn the page &#8594;</span></button>
     <div class="pg l">
       <h2>Interests</h2>
       <p class="upd">Last updated: <span id="intUpd">Nov 18, 2026</span></p>
@@ -699,7 +724,7 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
         </li>
         <li>Creative recovery
           <ol>
-            <li>Committing to the poetic act takes audacity.</li>
+            <li>I am moved by the creative process. Committing to the poetic act takes audacity.</li>
           </ol>
           <details>
             <summary style="font-size:12px;color:#a3977d">more</summary>
@@ -745,6 +770,7 @@ body.dark .modal .card{background:#e6dd9e;box-shadow:0 26px 70px rgba(0,0,0,.55)
   <div class="spread pop">
     <button class="closer" data-close aria-label="Close">[x]</button>
     <button class="backer" data-back aria-label="Back to contents">&#8592; contents</button>
+    <button class="flip prev" data-flip="-1" aria-label="Turn to the previous pages"><span class="fl">&#8592; turn back</span></button>
     <div class="pg l">
       <h2>Trivia</h2>
       <ul class="tlist">
@@ -875,9 +901,13 @@ function openOverlay(el){
 
 /* ── book pages: table-of-contents navigation ── */
 const spreads = Array.from(reader.querySelectorAll('.spread'));
+let curSpread = 0;
 function goSpread(i){
-  spreads.forEach((s, j) => s.classList.toggle('cur', j === i));
+  curSpread = Math.max(0, Math.min(i, spreads.length - 1));
+  spreads.forEach((s, j) => s.classList.toggle('cur', j === curSpread));
 }
+reader.querySelectorAll('[data-flip]').forEach(b =>
+  b.addEventListener('click', () => goSpread(curSpread + (+b.dataset.flip))));
 reader.querySelectorAll('[data-goto]').forEach(b =>
   b.addEventListener('click', () => goSpread(+b.dataset.goto)));
 reader.querySelectorAll('[data-back]').forEach(b =>
@@ -891,6 +921,10 @@ document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click
 overlays.forEach(o => o.addEventListener('click', e => { if (e.target === o) closeAll(); }));
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && anyOpen()) closeAll();
+  if (reader.classList.contains('open')){
+    if (e.key === 'ArrowRight') goSpread(curSpread + 1);
+    if (e.key === 'ArrowLeft')  goSpread(curSpread - 1);
+  }
 });
 
 /* ── interests: "last updated" shows the visitor's current date, refreshed daily ── */
